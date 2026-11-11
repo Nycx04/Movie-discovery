@@ -2,21 +2,28 @@ import './App.css'
 import { useState } from 'react';
 
 function App() {
-const [popular, setpopular] = useState([]);
+const [search, setsearch] = useState([]);
+const [type, settype] = useState("");
 const Api_Key = import.meta.env.VITE_API_KEY;
 function Show (e) {
   e.preventDefault();
-fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${Api_Key}`)
+fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(type)}&api_key=${Api_Key}`)
 .then((res) => res.json())
-.then((data) => setpopular(data.results || []))}
-console.log(import.meta.env.VITE_API_KEY);
+.then((data) => setsearch(data.results || []))}
+
   return (
     <>
-   <button onClick={Show}>Show popular</button>
-   {popular.map((popularlist) => 
-  <div key={popularlist.id}>
-    <h3>{popularlist.title}</h3>
-  </div>)}
+    <form onSubmit={Show}>
+      <input value={type} onChange={(type) => settype(type.target.value)}></input>
+      <button type="submit">Search</button>
+    </form>
+
+    {search.map((display) => (
+      <div key={display.id}>
+        <h2>{display.title}</h2>
+        <h2>{display.vote_average}</h2>
+       </div>
+    ))}
     </>
   )
 }
